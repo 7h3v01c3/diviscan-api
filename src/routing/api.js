@@ -49,8 +49,24 @@ module.exports = (app) => {
                 res.json(response)
             }
         })
-    })
 
+    })
+    
+    // Information about a specific block's hash'
+    app.get('/blockhash/:block', (req, res) => {
+        let block = req.params.block
+        rpc.getBlockHash(block, (err, response) => {
+            if (err) {
+                console.log(err)
+                if (err.code === -5) {
+                    res.json({ 'error': 'Invalid transaction' })
+                }
+            } else {
+                res.json(response)
+            }
+        })
+    })
+    
     // Verbose info about the ecosystem
     app.get('/info', (req, res) => {
         rpc.getInfo((err, response) => {
