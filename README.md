@@ -98,4 +98,4 @@ If you'd like your app listed here, just reach out to info@diviproject.org with 
 This API is currently being used by:
 
 * [Divi TipBot] 
-* [Divi KnowCryptoShow Bot]
+* [KnowCryptoShow Bot]
