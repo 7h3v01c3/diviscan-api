@@ -76,6 +76,7 @@ Node specific endpoints will only return data based on the node where the API is
 | `/balance/`           | `account`                 | get balance of account            	            | true              |
 | `/block/`             | `hash`                    | block object                      	            | false             |
 | `/blockcount`         |                           | number of blocks                  	            | false             |
+| `/blockhash/`         | `block`                   | details of block                    	            | false             |
 | `/connectioncount`    |                           | number of active peers            	            | true              |
 | `/decode-raw-tx/`     | `hex`                     | decoded raw transaction details                   | false             |
 | `/getaccount/`        | `address`                 | account name                      	            | true              |
@@ -83,6 +84,7 @@ Node specific endpoints will only return data based on the node where the API is
 | `/info`               |                           | info object                       	            | false             |
 | `/listreceived`       |                           | wallet tx object                  	            | true              |
 | `/masternodes`	    | 							| number of masternodes, masternode list            | false             |
+| `/mncounts`	        | 							| number of masternodes                             | false             |
 | `/newaddress/`        | `account name`            | new address                       	            | true              |
 | `/price`              |                           | current price of DIVI in USD and BTC              | false             |
 | `/sendfrom/`          | `from`, `to`, `amount`    | transaction id   						            | true              |
@@ -95,6 +97,5 @@ If you'd like your app listed here, just reach out to info@diviproject.org with 
 
 This API is currently being used by:
 
-* [Diviscan](https://diviscan.io) - [@99darwin](https://github.com/99darwin)
-* [Divi Lottery Timer](https://oriz.bubbleapps.io/) - [@hirscr](https://github.com/Hirscr)
-* [Divi Stats](https://slater.bubbleapps.io/) - [@hirscr](https://github.com/Hirscr)
+* [Divi TipBot] 
+* [KnowCryptoShow Bot]
