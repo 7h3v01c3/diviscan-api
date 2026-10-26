@@ -20,8 +20,6 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'src')))
 
 require('./src/routing/api')(app)
-require('./src/routing/wallet')(app)
-require('./src/routing/tx')(app)
 
 if (require.main === module) {
     app.listen(port, () => {
