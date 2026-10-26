@@ -19,8 +19,7 @@
   },
   "homepage": "https://github.com/99darwin/diviscan-api#readme",
   "scripts": {
-    "start": "nodemon index.js",
-    "test": "node --test test/*.test.js"
+    "start": "nodemon index.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
