@@ -2,10 +2,14 @@ const rpc = require('./rpc')
 
 const invalidTx = (err) => err && err.code === -5
 
-const sendRpc = async (res, method, params = [], { unwrap = false } = {}) => {
+const sendRpc = async (res, method, params = [], { unwrap = false, asBatch = false } = {}) => {
     try {
         const response = await rpc.call(method, params)
-        res.json(unwrap ? response.result : response)
+        if (unwrap) {
+            res.json(response.result)
+            return
+        }
+        res.json(asBatch ? [response] : response)
     } catch (err) {
         console.log(err)
         if (invalidTx(err)) {

@@ -46,13 +46,18 @@ module.exports = (app) => {
         sendRpc(res, 'getcoinavailability', params)
     })
 
-    const addressIndexRoute = (path, method, { asObject = true } = {}) => {
+    const addressIndexRoute = (path, method, { asObject = true, asBatch = false } = {}) => {
         app.get(`${path}/:address/:only_vaults?`, (req, res) => {
-            sendRpc(res, method, addressIndexArgs(req.params.address, onlyVaultsFromRequest(req), { asObject }))
+            sendRpc(
+                res,
+                method,
+                addressIndexArgs(req.params.address, onlyVaultsFromRequest(req), { asObject }),
+                { asBatch }
+            )
         })
     }
 
-    addressIndexRoute('/address-deltas', 'getaddressdeltas')
+    addressIndexRoute('/address-deltas', 'getaddressdeltas', { asBatch: true })
     addressIndexRoute('/getaddressbalance', 'getaddressbalance')
     addressIndexRoute('/getaddressdeltas', 'getaddressdeltas')
     addressIndexRoute('/getaddresstxids', 'getaddresstxids')

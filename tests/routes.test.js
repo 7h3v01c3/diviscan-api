@@ -97,9 +97,17 @@ describe('vault routes and masternode removal', () => {
         assert.equal(lastCall.method, 'getaddressbalance')
         assert.deepEqual(lastCall.params, [{ addresses: ['Dabc'] }, true])
 
-        await jsonGet(port, '/getaddressdeltas/Dabc?only_vaults=true')
+        const deltas = await jsonGet(port, '/getaddressdeltas/Dabc?only_vaults=true')
         assert.equal(lastCall.method, 'getaddressdeltas')
         assert.deepEqual(lastCall.params, [{ addresses: ['Dabc'] }, true])
+        assert.equal(Array.isArray(deltas.body), false)
+        assert.equal(deltas.body.result, 'getaddressdeltas-ok')
+
+        const legacyDeltas = await jsonGet(port, '/address-deltas/Dabc?only_vaults=true')
+        assert.equal(lastCall.method, 'getaddressdeltas')
+        assert.deepEqual(lastCall.params, [{ addresses: ['Dabc'] }, true])
+        assert.equal(Array.isArray(legacyDeltas.body), true)
+        assert.equal(legacyDeltas.body[0].result, 'getaddressdeltas-ok')
 
         await jsonGet(port, '/getaddresstxids/Dabc')
         assert.equal(lastCall.method, 'getaddresstxids')
@@ -127,6 +135,24 @@ describe('vault routes and masternode removal', () => {
         assert.deepEqual(lastCall, {
             method: 'reclaimvaultfunds',
             params: ['Ddest', 2, 'standard', 'note', 'bob']
+        })
+
+        await jsonGet(port, '/reclaimvaultfunds/Ddest/2?commentTo=bob')
+        assert.deepEqual(lastCall, {
+            method: 'reclaimvaultfunds',
+            params: ['Ddest', 2, '', '', 'bob']
+        })
+
+        await jsonGet(port, '/reclaimvaultfunds/Ddest/2?comment=note')
+        assert.deepEqual(lastCall, {
+            method: 'reclaimvaultfunds',
+            params: ['Ddest', 2, '', 'note']
+        })
+
+        await jsonGet(port, '/debitvaultbyname/vaultenc/Ddest/0.1')
+        assert.deepEqual(lastCall, {
+            method: 'debitvaultbyname',
+            params: ['vaultenc', 'Ddest', 0.1]
         })
 
         await jsonGet(port, '/removevault/Downer:Dmgr')

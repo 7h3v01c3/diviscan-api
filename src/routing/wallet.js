@@ -1,7 +1,6 @@
 const rpc = require('../rpc')
+const { positionalRpcParams } = require('../rpc-params')
 const { sendRpc } = require('../send-rpc')
-
-const optionalParams = (...values) => values.filter((value) => value !== undefined && value !== '')
 
 const numericAmount = (amount) => Number(amount)
 
@@ -49,7 +48,7 @@ module.exports = (app) => {
 
     app.get('/debitvaultbyname/:source/:destination/:amount', (req, res) => {
         const feeMode = req.query.feeMode || req.query.feemode
-        sendRpc(res, 'debitvaultbyname', optionalParams(
+        sendRpc(res, 'debitvaultbyname', positionalRpcParams(
             req.params.source,
             req.params.destination,
             numericAmount(req.params.amount),
@@ -61,7 +60,7 @@ module.exports = (app) => {
         const feeMode = req.query.feeMode || req.query.feemode || req.query.metadata
         const comment = req.query.comment
         const commentTo = req.query.commentTo || req.query['comment-to']
-        sendRpc(res, 'reclaimvaultfunds', optionalParams(
+        sendRpc(res, 'reclaimvaultfunds', positionalRpcParams(
             req.params.destination,
             numericAmount(req.params.amount),
             feeMode,
