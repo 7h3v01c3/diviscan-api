@@ -1,99 +1,76 @@
-const 
-    RpcClient   = require('divid-rpc'), 
-    config      = require('../config')
+const rpc = require('../rpc')
+const { sendRpc } = require('../send-rpc')
+
+const optionalParams = (...values) => values.filter((value) => value !== undefined && value !== '')
+
+const numericAmount = (amount) => Number(amount)
 
 module.exports = (app) => {
-    const rpc = new RpcClient(config.config)
-
-    /** WALLET FUNCTIONS */
-
-    // Get's the account name of specified address
-    app.get('/getaccount/:addr', (req, res) => {
-        let address = req.params.addr
-        rpc.getAccount(address, (err, response) => {
-            if (err) {
-                res.json({'Error': 'err'})
-            } else {
-                res.json(response)
-            }
-        })
+    app.get('/getaccount/:addr', async (req, res) => {
+        try {
+            const response = await rpc.call('getaccount', [req.params.addr])
+            res.json(response)
+        } catch (err) {
+            res.json({ Error: 'err' })
+        }
     })
 
-    // Get address of specified account
     app.get('/accountaddress/:acct', (req, res) => {
-        let account = req.params.acct
-        rpc.getAccountAddress(account, (err, response) => {
-            if (err) {
-                res.json(err)
-            } else {
-                res.json(response)
-            }
-        })
+        sendRpc(res, 'getaccountaddress', [req.params.acct])
     })
 
-    // Get all addresses of specified account
     app.get('/addrsbyaccount/:acct', (req, res) => {
-        let account = req.params.acct
-        rpc.getAddressesByAccount(account, (err, response) => {
-            if (err) {
-                res.json(err)
-            } else {
-                res.json(response)
-            }
-        })
+        sendRpc(res, 'getaddressesbyaccount', [req.params.acct])
     })
 
-    // Create new address
     app.get('/newaddress/:accountname', (req, res) => {
-        let name = req.params.accountname
-        rpc.getNewAddress(name, (err, response) => {
-            if (err) {
-                res.json(err)
-            } else {
-                res.json(response)
-            }
-        })
+        sendRpc(res, 'getnewaddress', [req.params.accountname])
     })
 
-
-    /** WALLET INFORMATION */
-
-    // Get balance of account
     app.get('/balance/:acct', (req, res) => {
-        let account = req.params.acct
-        rpc.getBalance(account, (err, response) => {
-            if (err) {
-                res.json(err)
-            } else {
-                res.json(response)
-            }
-        })
+        sendRpc(res, 'getbalance', [req.params.acct])
     })
 
-    // Get total amount received by a single address
     app.get('/getreceived/:addr', (req, res) => {
-        let addr = req.params.addr
-        rpc.getReceivedByAddress(addr, (err, response) => {
-            if (err) {
-                console.log(err)
-                if (err.code === 5) {
-                    res.json({'error': 'Invalid transaction'})
-                }
-            } else {
-                res.json(response)
-            }
-        })
+        sendRpc(res, 'getreceivedbyaddress', [req.params.addr])
     })
 
-    // List received transactions by current wallet
     app.get('/listreceived', (req, res) => {
-        rpc.listReceivedByAddress((err, response) => {
-            if(err) {
-                console.log(err)
-            } else {
-                res.json(response)
-            }
-        })
+        sendRpc(res, 'listreceivedbyaddress')
     })
 
+    app.get('/addvault/:vault/:fundingTxHash', (req, res) => {
+        sendRpc(res, 'addvault', [req.params.vault, req.params.fundingTxHash])
+    })
+
+    app.get('/fundvault/:vault/:amount', (req, res) => {
+        sendRpc(res, 'fundvault', [req.params.vault, numericAmount(req.params.amount)])
+    })
+
+    app.get('/debitvaultbyname/:source/:destination/:amount', (req, res) => {
+        const feeMode = req.query.feeMode || req.query.feemode
+        sendRpc(res, 'debitvaultbyname', optionalParams(
+            req.params.source,
+            req.params.destination,
+            numericAmount(req.params.amount),
+            feeMode
+        ))
+    })
+
+    app.get('/reclaimvaultfunds/:destination/:amount', (req, res) => {
+        const feeMode = req.query.feeMode || req.query.feemode || req.query.metadata
+        const comment = req.query.comment
+        const commentTo = req.query.commentTo || req.query['comment-to']
+        sendRpc(res, 'reclaimvaultfunds', optionalParams(
+            req.params.destination,
+            numericAmount(req.params.amount),
+            feeMode,
+            comment,
+            commentTo
+        ))
+    })
+
+    app.get('/removevault/:vault', (req, res) => {
+        sendRpc(res, 'removevault', [req.params.vault])
+    })
 }
