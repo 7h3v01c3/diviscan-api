@@ -1,5 +1,5 @@
-const CoinGecko = require('coingecko-api')
 const rpc = require('../rpc')
+const { getDiviPrice } = require('../price')
 const { positionalRpcParams } = require('../rpc-params')
 const { sendRpc } = require('../send-rpc')
 const { addressIndexArgs, detailedAvailability, onlyVaultsFromRequest } = require('../flags')
@@ -7,8 +7,6 @@ const { addressIndexArgs, detailedAvailability, onlyVaultsFromRequest } = requir
 const numericAmount = (amount) => Number(amount)
 
 module.exports = (app) => {
-    const CoinGeckoClient = new CoinGecko()
-
     app.use((req, res, next) => {
         const ip = req.headers['cf-connecting-ip']
         console.log({ time: Date.now(), ip })
@@ -133,13 +131,7 @@ module.exports = (app) => {
 
     app.get('/price', async (req, res) => {
         try {
-            const data = await CoinGeckoClient.coins.fetch('divi')
-            const usd = data.data.market_data.current_price.usd
-            const btc = data.data.market_data.current_price.btc
-            res.json({
-                usd,
-                btc: `${btc * 100000000} sats`
-            })
+            res.json(await getDiviPrice(req))
         } catch (err) {
             console.error(err)
             res.json({ error: err.message })

@@ -50,9 +50,14 @@ Example keys.js
 ```javascript
 module.exports = {
     user: 'RandomName',
-    pass: 'SuperSecretRandomPasswordChangeOrBePwned'
+    pass: 'SuperSecretRandomPasswordChangeOrBePwned',
+    coinmarketcap: 'YourCoinMarketCapApiKey',
+    coingecko: 'YourCoinGeckoApiKey',
+    priceSource: 'coinmarketcap'
 }
 ```
+
+Copy `keys.example.js` to `keys.js` and fill in secrets. `keys.js` is gitignored. `/price` reads `coinmarketcap` and `coingecko` from that file (or `COINMARKETCAP_API_KEY` / `COINGECKO_API_KEY`). Set `priceSource` to `coinmarketcap` or `coingecko`, or pass `?source=coinmarketcap` / `?source=coingecko`. If `priceSource` is empty, CoinMarketCap is used when its key is set, otherwise CoinGecko.
 
 5. Run `./divid -reindex -addressindex` on startup.
 
@@ -93,7 +98,7 @@ Node specific endpoints will only return data based on the node where the API is
 | `/info` | | info object | false |
 | `/listreceived` | | wallet tx object | true |
 | `/newaddress/` | `account name` | new address | true |
-| `/price` | | current price of DIVI in USD and BTC | false |
+| `/price` | `source` (optional: `coinmarketcap` or `coingecko`) | current price of DIVI in USD and BTC | false |
 | `/reclaimvaultfunds/` | `destination`, `amount`, optional query `feeMode` or `metadata`, `comment`, `commentTo` | reclaim vault funds to a destination | true |
 | `/removevault/` | `vault` (`owner:manager`) | remove a vault from the wallet | true |
 | `/sendfrom/` | `from`, `to`, `amount` | transaction id | true |
