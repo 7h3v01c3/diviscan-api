@@ -1,4 +1,8 @@
 module.exports = {
     user: 'YOURRPCUSERNAME',
-    pass: 'YOURSECRETRPCPASSWORD'
+    pass: 'YOURSECRETRPCPASSWORD',
+    enablePrice: false,
+    coinmarketcap: 'YOURCOINMARKETCAPAPIKEY',
+    coingecko: 'YOURCOINGECKOAPIKEY',
+    priceSource: 'coinmarketcap'
 }
