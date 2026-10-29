@@ -1,5 +1,4 @@
 const CoinGecko = require('coingecko-api')
-const _ = require('lodash')
 const rpc = require('../rpc')
 const { positionalRpcParams } = require('../rpc-params')
 const { sendRpc } = require('../send-rpc')
@@ -130,32 +129,6 @@ module.exports = (app) => {
 
     app.get('/decode-raw-tx/:hex', (req, res) => {
         sendRpc(res, 'decoderawtransaction', [req.params.hex], { unwrap: true })
-    })
-
-    app.get('/account-details/:account?', async (req, res) => {
-        const account = req.params.account ? req.params.account : ''
-        try {
-            const response = await rpc.call('listtransactions', [account, 10000000])
-            const addresses = _.uniq(
-                (response.result || [])
-                    .map((transaction) => transaction.address)
-                    .filter((address) => address !== undefined)
-            )
-            const balanceArray = []
-
-            for (const uniqAddress of addresses) {
-                const resp = await rpc.call('getaddressbalance', addressIndexArgs(uniqAddress, false))
-                balanceArray.push({
-                    address: uniqAddress,
-                    balance: resp.result.balance / 100000000
-                })
-            }
-
-            res.json(balanceArray)
-        } catch (err) {
-            console.log('account details error:', err)
-            res.json({ error: err.message })
-        }
     })
 
     app.get('/price', async (req, res) => {

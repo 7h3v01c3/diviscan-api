@@ -71,7 +71,6 @@ Node specific endpoints will only return data based on the node where the API is
 | Endpoint | Params | Response | Node Specific |
 | -------- | ------ | -------- | -------- |
 | `/accountaddress/` | `account` | address of account | true |
-| `/account-details/` | `account` (optional) | list addresses and balances based on account name | true |
 | `/address/` | `address`, `only_vaults` (optional) | transaction, balance, and delta info | false |
 | `/address_utxos/` | `address`, `only_vaults` (optional) | all UTXOs from an address | false |
 | `/addrsbyaccount/` | `account` | all addresses of specified account | true |
