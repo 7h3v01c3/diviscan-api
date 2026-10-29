@@ -1,5 +1,5 @@
 const rpc = require('../rpc')
-const { getDiviPrice } = require('../price')
+const { registerPriceRoute } = require('../price')
 const { positionalRpcParams } = require('../rpc-params')
 const { sendRpc } = require('../send-rpc')
 const { addressIndexArgs, detailedAvailability, onlyVaultsFromRequest } = require('../flags')
@@ -129,14 +129,7 @@ module.exports = (app) => {
         sendRpc(res, 'decoderawtransaction', [req.params.hex], { unwrap: true })
     })
 
-    app.get('/price', async (req, res) => {
-        try {
-            res.json(await getDiviPrice(req))
-        } catch (err) {
-            console.error(err)
-            res.json({ error: err.message })
-        }
-    })
+    registerPriceRoute(app)
 
     app.get('/getaccount/:addr', async (req, res) => {
         try {

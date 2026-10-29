@@ -51,13 +51,14 @@ Example keys.js
 module.exports = {
     user: 'RandomName',
     pass: 'SuperSecretRandomPasswordChangeOrBePwned',
+    enablePrice: false,
     coinmarketcap: 'YourCoinMarketCapApiKey',
     coingecko: 'YourCoinGeckoApiKey',
     priceSource: 'coinmarketcap'
 }
 ```
 
-Copy `keys.example.js` to `keys.js` and fill in secrets. `keys.js` is gitignored. `/price` reads `coinmarketcap` and `coingecko` from that file (or `COINMARKETCAP_API_KEY` / `COINGECKO_API_KEY`). Set `priceSource` to `coinmarketcap` or `coingecko`, or pass `?source=coinmarketcap` / `?source=coingecko`. If `priceSource` is empty, CoinMarketCap is used when its key is set, otherwise CoinGecko.
+Copy `keys.example.js` to `keys.js` and fill in secrets. `keys.js` is gitignored. `/price` is optional: set `enablePrice: false` (or leave keys empty) and the route is not registered. Set `enablePrice: true` and add `coinmarketcap` and/or `coingecko` (or `COINMARKETCAP_API_KEY` / `COINGECKO_API_KEY`) to turn it on. `priceSource` chooses the default provider; `?source=coinmarketcap` or `?source=coingecko` overrides per request. If `priceSource` is empty, CoinMarketCap is used when its key is set, otherwise CoinGecko.
 
 5. Run `./divid -reindex -addressindex` on startup.
 
@@ -98,7 +99,7 @@ Node specific endpoints will only return data based on the node where the API is
 | `/info` | | info object | false |
 | `/listreceived` | | wallet tx object | true |
 | `/newaddress/` | `account name` | new address | true |
-| `/price` | `source` (optional: `coinmarketcap` or `coingecko`) | current price of DIVI in USD and BTC | false |
+| `/price` | `source` (optional: `coinmarketcap` or `coingecko`) | current price of DIVI in USD and BTC. Omitted when `enablePrice` is false or no provider keys are set | false |
 | `/reclaimvaultfunds/` | `destination`, `amount`, optional query `feeMode` or `metadata`, `comment`, `commentTo` | reclaim vault funds to a destination | true |
 | `/removevault/` | `vault` (`owner:manager`) | remove a vault from the wallet | true |
 | `/sendfrom/` | `from`, `to`, `amount` | transaction id | true |

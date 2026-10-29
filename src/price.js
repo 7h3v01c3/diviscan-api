@@ -76,6 +76,21 @@ const getDiviPrice = async (req) => {
     throw new Error('Set coinmarketcap or coingecko in keys.js (see keys.example.js)')
 }
 
+const registerPriceRoute = (app) => {
+    if (!priceConfig.enabled) {
+        return
+    }
+    app.get('/price', async (req, res) => {
+        try {
+            res.json(await getDiviPrice(req))
+        } catch (err) {
+            console.error(err)
+            res.json({ error: err.message })
+        }
+    })
+}
+
 module.exports = {
-    getDiviPrice
+    getDiviPrice,
+    registerPriceRoute
 }
